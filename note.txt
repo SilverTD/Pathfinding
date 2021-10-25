@@ -1,0 +1,8 @@
+Một Node có x, y, f, g, h
+
+f(x) = g(x) + h(x)
+
++ g(x) là chi phí của đường đi cho đến thời điểm hiện tại,
+nghĩa là tổng trọng số của các cạnh đã đi qua.
+
++ h(x) là hàm đánh giá heuristic về chi phí nhỏ nhất để đến đích từ x
