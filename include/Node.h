@@ -4,8 +4,6 @@
 
 #include <vector>
 
-#include <iostream>
-
 #include "Globals.h"
 
 class Node {

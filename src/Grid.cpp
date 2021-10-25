@@ -2,6 +2,8 @@
 
 #include "Globals.h"
 
+#include <algorithm>
+
 Grid::Grid(SDL_Renderer *renderer, const int &size) :
 renderer(renderer), size(size) {
         values = new Node[size * size];
@@ -41,10 +43,32 @@ void Grid::setParent(const Node &child, const Node &parent) {
         values[child.x * size + child.y].setParent(parent);
 }
 
+void Grid::addWall(const int &x, const int &y) {
+        values[x * size + y].isWall = true;
+        walls.push_back(values[x * size + y]);
+}
+
+bool Grid::checkExist(const int &x, const int &y) {
+        return (std::find(walls.begin(), walls.end(), values[x * size + y]) != walls.end());
+}
+
+void Grid::removeWall(const int &x, const int &y) {
+        values[x * size + y].isWall = false;
+        walls.erase(std::remove(walls.begin(), walls.end(), values[x * size + y]), walls.end());
+}
+
+void Grid::removeWalls() {
+        walls.clear();
+}
+
+void Grid::drawWall() {
+        for (auto &wall : walls) wall.draw(44, 44, 44);
+}
+
 void Grid::draw() {
         SDL_SetRenderDrawColor(renderer, 226, 221, 221, 0xff);
 
-        for (int i = -1; i < 1 + ROWS * SIZE; i += SIZE) {
+        for (int i = -1; i < 1 + size * SIZE; i += SIZE) {
                 SDL_RenderDrawLine(renderer, i, 0, i, SCREEN_HEIGHT);
                 SDL_RenderDrawLine(renderer, 0, i, SCREEN_WIDTH, i);
         }

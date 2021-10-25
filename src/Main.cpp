@@ -24,14 +24,23 @@ int
         timerFPS,
         lastFrame,
         fps,
-        lastTime;
+        lastTime,
+        type = 0;
 
 bool
         running = true,
-        isMouseDown = false,
-        isMouseUp = false;
+        startFinding = false;
 
 Grid grid;
+
+SDL_Rect grid_cursor = {
+        .x = (10 - 1) / 2 * SIZE,
+        .y = (10 - 1) / 2 * SIZE,
+        .w = SIZE,
+        .h = SIZE,
+};
+
+SDL_Rect grid_cursor_ghost = {grid_cursor.x, grid_cursor.y, SIZE, SIZE};
 
 Node start, target;
 
@@ -42,8 +51,6 @@ void init() {
         grid = Grid(renderer, 10);
         start = Node(renderer, 0, 0, false);
         target = Node(renderer, 9, 9, false);
-
-        open.push_back(start);
 }
 
 float heuristic(Node start, Node end) {
@@ -51,9 +58,7 @@ float heuristic(Node start, Node end) {
 }
 
 void update() {
-        if (open.empty()) {
-                return;
-        }
+        if (open.empty() || !startFinding) return;
 
         Node current = open[0];
 
@@ -99,6 +104,42 @@ void input() {
         while (SDL_PollEvent(&event)) {
                 switch (event.type) {
                         case SDL_QUIT: running = false; break;
+                        case SDL_MOUSEMOTION:
+                                grid_cursor_ghost.x = (event.motion.x / SIZE) * SIZE;
+                                grid_cursor_ghost.y = (event.motion.y / SIZE) * SIZE;
+                                break;
+                        case SDL_MOUSEBUTTONDOWN:
+                                open.clear();
+                                closed.clear();
+                                path.clear();
+                                if (type == 0) start = Node(renderer, (event.motion.x / SIZE), (event.motion.y / SIZE), false);
+                                else if (type == 1) target = Node(renderer, (event.motion.x / SIZE), (event.motion.y / SIZE), false);
+                                else if (type == 2) {
+                                        if (grid.checkExist((event.motion.x / SIZE), (event.motion.y / SIZE))) {
+                                                grid.removeWall((event.motion.x / SIZE), (event.motion.y / SIZE));
+                                                break;
+                                        }
+                                        grid.addWall((event.motion.x / SIZE), (event.motion.y / SIZE));
+                                }
+                                break;
+                        case SDL_KEYDOWN:
+                                switch (event.key.keysym.sym) {
+                                        case SDLK_RETURN:
+                                                startFinding = true;
+                                                if (startFinding) open.push_back(start);
+                                                break;
+                                        case SDLK_ESCAPE:
+                                                startFinding = false;
+                                                open.clear();
+                                                closed.clear();
+                                                path.clear();
+                                                grid.removeWalls();
+                                                break;
+                                        case SDLK_1: type = 0; break;
+                                        case SDLK_2: type = 1; break;
+                                        case SDLK_3: type = 2; break;
+                                }
+                                break;
                 }
         }
 }
@@ -121,6 +162,11 @@ void draw() {
 
         for (auto &node : path)
                 node.draw(85, 176, 254);      // Pink.
+
+        grid.drawWall();
+
+        SDL_SetRenderDrawColor(renderer, 44, 44, 44, 0xff);     // Draw grid_cursor_ghost.
+        SDL_RenderFillRect(renderer, &grid_cursor_ghost);
 
         start.draw(63, 119, 255);
         target.draw(255, 34, 10);
