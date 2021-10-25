@@ -1,6 +1,7 @@
 #include "Grid.h"
 
-Grid::Grid(SDL_Renderer *renderer, const int &size) : size(size) {
+Grid::Grid(SDL_Renderer *renderer, const int &size) :
+renderer(renderer), size(size) {
         values = new Node[size * size];
 
         Node temp;
@@ -36,4 +37,12 @@ Node Grid::getNode(const int &x, const int &y) {
 
 void Grid::setParent(const Node &child, const Node &parent) {
         values[child.x * size + child.y].setParent(parent);
+}
+
+void Grid::draw() {
+        for (int x = 0; x < size; ++x) {
+                for (int y = 0; y < size; ++y) {
+                        values[x * size + y].draw(121, 120, 120, true);
+                }
+        }
 }

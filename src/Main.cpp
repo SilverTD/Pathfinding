@@ -114,18 +114,18 @@ void tick() {
 
 void draw() {
         for (auto &node : closed)
-                node.draw(0xff, 0x0, 0x0, 0xff, false);    // Red.
+                node.draw(255, 106, 73, false);    // Red.
 
         for (auto &node : open)
-                node.draw(0x0, 0xff, 0x0, 0xff, false);      // Green.
+                node.draw(36, 221, 96, false);      // Green.
 
-        for (auto &node : path) {
-                std::cout << "hi" << '\n';
-                node.draw(245, 40, 145, 0xff, false);      // Pink.
-        }
+        for (auto &node : path)
+                node.draw(85, 176, 254, false);      // Pink.
 
-        start.draw(63, 109, 206, 255, false);
-        target.draw(62, 225, 108, 255, false);
+        start.draw(63, 119, 255, false);
+        target.draw(255, 34, 10, false);
+
+        grid.draw();
 }
 
 void render() {

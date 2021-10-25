@@ -7,8 +7,8 @@ renderer(renderer), x(x), y(y), isWall(isWall) {
         rect.y = y * SIZE;
 };
 
-void Node::draw(const uint8_t &r, const uint8_t &g, const uint8_t &b, const uint8_t &a, const bool &outline) {
-        SDL_SetRenderDrawColor(renderer, r, g, b, a); // Color rgba
+void Node::draw(const uint8_t &r, const uint8_t &g, const uint8_t &b, const bool &outline) {
+        SDL_SetRenderDrawColor(renderer, r, g, b, 0xff); // Color rgba
         if (outline) {
                 SDL_RenderDrawRect(renderer, &rect);
                 return;
@@ -26,5 +26,5 @@ bool Node::operator == (const Node &other) const {
 }
 
 bool Node::operator != (const Node &other) const {
-        return (x != other.x && y != other.y);
+        return (x != other.x || y != other.y);
 }

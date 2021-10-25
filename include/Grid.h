@@ -15,9 +15,12 @@ class Grid {
                 std::vector<Node> getNeighbors(const Node &node);
                 Node getNode(const int &x, const int &y);
                 void setParent(const Node &child, const Node &parent);
+                void draw();
         private:
                 int size;
                 Node *values;
 
                 std::vector<Node> walls;
+
+                SDL_Renderer *renderer;
 };

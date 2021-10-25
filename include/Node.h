@@ -14,7 +14,7 @@ class Node {
                 Node() = default;
                 ~Node() = default;
 
-                void draw(const uint8_t &r, const uint8_t &g, const uint8_t &b, const uint8_t &a, const bool &outline = true);
+                void draw(const uint8_t &r, const uint8_t &g, const uint8_t &b, const bool &outline = true);
                 void setParent(const Node &parent);
 
                 bool operator == (const Node &other) const;
@@ -26,7 +26,7 @@ class Node {
                         g = 0,
                         parentX,
                         parentY;
-                        
+
                 float f = 0.0f, h = 0.0f;
                 bool isWall;
         private:
