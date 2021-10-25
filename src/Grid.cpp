@@ -1,5 +1,7 @@
 #include "Grid.h"
 
+#include "Globals.h"
+
 Grid::Grid(SDL_Renderer *renderer, const int &size) :
 renderer(renderer), size(size) {
         values = new Node[size * size];
@@ -40,9 +42,10 @@ void Grid::setParent(const Node &child, const Node &parent) {
 }
 
 void Grid::draw() {
-        for (int x = 0; x < size; ++x) {
-                for (int y = 0; y < size; ++y) {
-                        values[x * size + y].draw(121, 120, 120, true);
-                }
+        SDL_SetRenderDrawColor(renderer, 226, 221, 221, 0xff);
+
+        for (int i = -1; i < 1 + ROWS * SIZE; i += SIZE) {
+                SDL_RenderDrawLine(renderer, i, 0, i, SCREEN_HEIGHT);
+                SDL_RenderDrawLine(renderer, 0, i, SCREEN_WIDTH, i);
         }
 }

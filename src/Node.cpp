@@ -7,12 +7,8 @@ renderer(renderer), x(x), y(y), isWall(isWall) {
         rect.y = y * SIZE;
 };
 
-void Node::draw(const uint8_t &r, const uint8_t &g, const uint8_t &b, const bool &outline) {
+void Node::draw(const uint8_t &r, const uint8_t &g, const uint8_t &b) {
         SDL_SetRenderDrawColor(renderer, r, g, b, 0xff); // Color rgba
-        if (outline) {
-                SDL_RenderDrawRect(renderer, &rect);
-                return;
-        }
         SDL_RenderFillRect(renderer, &rect);
 }
 

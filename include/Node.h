@@ -14,7 +14,7 @@ class Node {
                 Node() = default;
                 ~Node() = default;
 
-                void draw(const uint8_t &r, const uint8_t &g, const uint8_t &b, const bool &outline = true);
+                void draw(const uint8_t &r, const uint8_t &g, const uint8_t &b);
                 void setParent(const Node &parent);
 
                 bool operator == (const Node &other) const;

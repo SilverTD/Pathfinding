@@ -114,16 +114,16 @@ void tick() {
 
 void draw() {
         for (auto &node : closed)
-                node.draw(255, 106, 73, false);    // Red.
+                node.draw(255, 106, 73);    // Red.
 
         for (auto &node : open)
-                node.draw(36, 221, 96, false);      // Green.
+                node.draw(36, 221, 96);      // Green.
 
         for (auto &node : path)
-                node.draw(85, 176, 254, false);      // Pink.
+                node.draw(85, 176, 254);      // Pink.
 
-        start.draw(63, 119, 255, false);
-        target.draw(255, 34, 10, false);
+        start.draw(63, 119, 255);
+        target.draw(255, 34, 10);
 
         grid.draw();
 }
