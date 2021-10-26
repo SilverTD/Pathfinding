@@ -33,14 +33,7 @@ bool
 
 Grid grid;
 
-SDL_Rect grid_cursor = {
-        .x = (10 - 1) / 2 * SIZE,
-        .y = (10 - 1) / 2 * SIZE,
-        .w = SIZE,
-        .h = SIZE,
-};
-
-SDL_Rect grid_cursor_ghost = {grid_cursor.x, grid_cursor.y, SIZE, SIZE};
+SDL_Rect grid_cursor_ghost = {(10 - 1) / 2 * SIZE, (10 - 1) / 2 * SIZE, SIZE, SIZE};
 
 Node start, target;
 
@@ -53,7 +46,7 @@ void init() {
         target = Node(renderer, 9, 9, false);
 }
 
-float heuristic(Node start, Node end) {
+float heuristic(const Node &start, const Node &end) {
         return std::hypot(end.x - start.x, end.y - start.y);
 }
 
@@ -154,19 +147,14 @@ void tick() {
 }
 
 void draw() {
-        for (auto &node : closed)
-                node.draw(255, 106, 73);    // Red.
+        SDL_SetRenderDrawColor(renderer, 192, 191, 192, 0xff);     // Draw grid_cursor_ghost.
+        SDL_RenderFillRect(renderer, &grid_cursor_ghost);
 
-        for (auto &node : open)
-                node.draw(36, 221, 96);      // Green.
-
-        for (auto &node : path)
-                node.draw(85, 176, 254);      // Pink.
+        for (auto &node : closed) node.draw(255, 106, 73);    // Red.
+        for (auto &node : open) node.draw(36, 221, 96);      // Green.
+        for (auto &node : path) node.draw(85, 176, 254);      // Pink.
 
         grid.drawWall();
-
-        SDL_SetRenderDrawColor(renderer, 44, 44, 44, 0xff);     // Draw grid_cursor_ghost.
-        SDL_RenderFillRect(renderer, &grid_cursor_ghost);
 
         start.draw(63, 119, 255);
         target.draw(255, 34, 10);
