@@ -29,6 +29,7 @@ int
 
 bool
         running = true,
+        mouseDown = false,
         startFinding = false;
 
 Grid grid;
@@ -100,8 +101,13 @@ void input() {
                         case SDL_MOUSEMOTION:
                                 grid_cursor_ghost.x = (event.motion.x / SIZE) * SIZE;
                                 grid_cursor_ghost.y = (event.motion.y / SIZE) * SIZE;
+                                if (mouseDown && type == 2) {
+                                        if (grid.checkExist((event.motion.x / SIZE), (event.motion.y / SIZE))) break;
+                                        grid.addWall((event.motion.x / SIZE), (event.motion.y / SIZE));
+                                }
                                 break;
                         case SDL_MOUSEBUTTONDOWN:
+                                mouseDown = true;
                                 open.clear();
                                 closed.clear();
                                 path.clear();
@@ -114,6 +120,9 @@ void input() {
                                         }
                                         grid.addWall((event.motion.x / SIZE), (event.motion.y / SIZE));
                                 }
+                                break;
+                        case SDL_MOUSEBUTTONUP:
+                                mouseDown = false;
                                 break;
                         case SDL_KEYDOWN:
                                 switch (event.key.keysym.sym) {
