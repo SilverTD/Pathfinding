@@ -4,15 +4,15 @@
 
 #include <algorithm>
 
-Grid::Grid(SDL_Renderer *renderer, const int &size) :
-renderer(renderer), size(size) {
-        values = new Node[size * size];
+Grid::Grid(SDL_Renderer *renderer, const int &width, const int &height) :
+renderer(renderer), width(width), height(height) {
+        values = new Node[width * height];
 
         Node temp;
-        for (int x = 0; x < size; ++x) {
-                for (int y = 0; y < size; ++y) {
+        for (int y = 0; y < height; ++y) {
+                for (int x = 0; x < width; ++x) {
                         temp = Node(renderer, x, y, false);
-                        values[x * size + y] = temp;
+                        values[y * width + x] = temp;
                 }
         }
 };
@@ -27,7 +27,7 @@ std::vector<Node> Grid::getNeighbors(const Node &node) {
                         int checkX = node.x + x;
                         int checkY = node.y + y;
 
-                        if (checkX >= 0 && checkX < size && checkY >= 0 && checkY < size)
+                        if (checkX >= 0 && checkX < width && checkY >= 0 && checkY < height)
                                 neighbors.push_back(getNode(checkX, checkY));
                 }
         }
@@ -36,28 +36,33 @@ std::vector<Node> Grid::getNeighbors(const Node &node) {
 }
 
 Node Grid::getNode(const int &x, const int &y) {
-        return values[x * size + y];
+        return values[y * width + x];
 }
 
 void Grid::setParent(const Node &child, const Node &parent) {
-        values[child.x * size + child.y].setParent(parent);
+        values[child.y * width + child.x].setParent(parent);
 }
 
 void Grid::addWall(const int &x, const int &y) {
-        values[x * size + y].isWall = true;
-        walls.push_back(values[x * size + y]);
+        values[y * width + x].isWall = true;
+        walls.push_back(values[y * width + x]);
 }
 
 bool Grid::checkExist(const int &x, const int &y) {
-        return (std::find(walls.begin(), walls.end(), values[x * size + y]) != walls.end());
+        return (std::find(walls.begin(), walls.end(), values[y * width + x]) != walls.end());
 }
 
 void Grid::removeWall(const int &x, const int &y) {
-        values[x * size + y].isWall = false;
-        walls.erase(std::remove(walls.begin(), walls.end(), values[x * size + y]), walls.end());
+        values[y * width + x].isWall = false;
+        walls.erase(std::remove(walls.begin(), walls.end(), values[y * width + x]), walls.end());
 }
 
 void Grid::removeWalls() {
+        for (int y = 0; y < height; ++y) {
+                for (int x = 0; x < width; ++x) {
+                        values[y * width + x].isWall = false;
+                }
+        }
         walls.clear();
 }
 
@@ -68,8 +73,8 @@ void Grid::drawWall() {
 void Grid::draw() {
         SDL_SetRenderDrawColor(renderer, 226, 221, 221, 0xff);
 
-        for (int i = -1; i < 1 + size * SIZE; i += SIZE) {
-                SDL_RenderDrawLine(renderer, i, 0, i, SCREEN_HEIGHT);
-                SDL_RenderDrawLine(renderer, 0, i, SCREEN_WIDTH, i);
-        }
+        for (int x = -1; x < 1 + width * SIZE; x += SIZE)
+                SDL_RenderDrawLine(renderer, x, 0, x, SCREEN_HEIGHT);
+        for (int y = -1; y < 1 + height * SIZE; y += SIZE)
+                SDL_RenderDrawLine(renderer, 0, y, SCREEN_WIDTH, y);
 }

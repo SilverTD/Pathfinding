@@ -42,9 +42,9 @@ std::vector<Node> open, closed;
 std::vector<Node> path;
 
 void init() {
-        grid = Grid(renderer, 10);
+        grid = Grid(renderer, ROWS, COLS);
         start = Node(renderer, 0, 0, false);
-        target = Node(renderer, 9, 9, false);
+        target = Node(renderer, ROWS - 1, COLS - 1, false);
 }
 
 float heuristic(const Node &start, const Node &end) {
@@ -69,6 +69,7 @@ void update() {
                 }
 
                 std::reverse(path.begin(), path.end());
+                startFinding = false;
                 return;
         }
 

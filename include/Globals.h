@@ -1,6 +1,9 @@
 #pragma once
 
-#define SCREEN_WIDTH 400
-#define SCREEN_HEIGHT 400
+#define ROWS 25
+#define COLS 16
+
+#define SCREEN_WIDTH 1000
+#define SCREEN_HEIGHT 640
 
 #define SIZE 40

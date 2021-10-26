@@ -8,7 +8,7 @@
 
 class Grid {
         public:
-                Grid(SDL_Renderer *renderer, const int &size);
+                Grid(SDL_Renderer *renderer, const int &width, const int &height);
                 Grid() = default;
                 ~Grid() = default;
 
@@ -22,7 +22,9 @@ class Grid {
                 void drawWall();
                 void draw();
         private:
-                int size;
+                int width;
+                int height;
+
                 Node *values;
 
                 std::vector<Node> walls;
