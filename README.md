@@ -1,5 +1,5 @@
 # Pathfinding
-Just a simple A* pathfinding visualization written in C++ uses SDL2 library.
+Just a simple A* pathfinding visualization written in C++ using SDL2 library.
 
 ## Basic Controls
 To create nodes:
@@ -14,7 +14,7 @@ To start finding the path:
   - Press <b>enter</b>.
   
 To clear the map:
-  - Press <b>esc</b>
+  - Press <b>esc</b>.
   
 ## Demo
 ![demo](https://media.discordapp.net/attachments/636515552428425236/902502770286952498/demo.gif)
