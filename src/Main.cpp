@@ -1,3 +1,24 @@
+/*
+        A* shortest pathfinding visualization.
+        Written by SilverbossTD (duynctsilverboss@gmail.com).
+
+        Language: C++.
+        Library: SDL2.
+        Algorithm: A*.
+
+        Basic Controls:
+        - Create "Nodes":
+                + Start: press 1 + left click.
+                + End: press 2 + left click.
+                + Wall: press 3 + left click.
+        - Delete "Walls":
+                + Press 3 + left click on the wall.
+        - Start finding:
+                + Press "Enter".
+        - Clear the map:
+                + Press "ESC".
+*/
+
 #include <SDL2/SDL.h>
 
 #include <iostream>
@@ -34,7 +55,7 @@ bool
 
 Grid grid;
 
-SDL_Rect grid_cursor_ghost = {(10 - 1) / 2 * SIZE, (10 - 1) / 2 * SIZE, SIZE, SIZE};
+SDL_Rect grid_cursor_ghost = {(ROWS - 1) / 2 * SIZE, (COLS - 1) / 2 * SIZE, SIZE, SIZE};
 
 Node start, target;
 
@@ -129,7 +150,7 @@ void input() {
                                 switch (event.key.keysym.sym) {
                                         case SDLK_RETURN:
                                                 startFinding = true;
-                                                if (startFinding) open.push_back(start);
+                                                open.push_back(start);
                                                 break;
                                         case SDLK_ESCAPE:
                                                 startFinding = false;

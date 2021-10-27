@@ -25,7 +25,9 @@ class Node {
                         parentX,
                         parentY;
 
-                float f = 0.0f, h = 0.0f;
+                float
+                        f = 0.0f,
+                        h = 0.0f;
                 bool isWall;
         private:
                 SDL_Rect rect;

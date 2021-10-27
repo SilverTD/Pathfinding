@@ -20,8 +20,8 @@ renderer(renderer), width(width), height(height) {
 std::vector<Node> Grid::getNeighbors(const Node &node) {
         std::vector<Node> neighbors;
 
-        for (int x = -1; x <= 1; ++x) {
-                for (int y = -1; y <= 1; ++y) {
+        for (int y = -1; y <= 1; ++y) {
+                for (int x = -1; x <= 1; ++x) {
                         if (x == 0 && y == 0) continue;
 
                         int checkX = node.x + x;
@@ -73,8 +73,8 @@ void Grid::drawWall() {
 void Grid::draw() {
         SDL_SetRenderDrawColor(renderer, 226, 221, 221, 0xff);
 
-        for (int x = -1; x < 1 + width * SIZE; x += SIZE)
+        for (int x = -1; x < 1 + width * SIZE - SIZE; x += SIZE)
                 SDL_RenderDrawLine(renderer, x, 0, x, SCREEN_HEIGHT);
-        for (int y = -1; y < 1 + height * SIZE; y += SIZE)
+        for (int y = -1; y < 1 + height * SIZE - SIZE; y += SIZE)
                 SDL_RenderDrawLine(renderer, 0, y, SCREEN_WIDTH, y);
 }
