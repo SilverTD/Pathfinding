@@ -4,15 +4,13 @@
 
 #include <algorithm>
 
-Grid::Grid(SDL_Renderer *renderer, const int &width, const int &height) :
-renderer(renderer), width(width), height(height) {
+Grid::Grid(SDL_Renderer *renderer, const int &width, const int &height, const int &size) :
+renderer(renderer), width(width), height(height), size(size) {
         values = new Node[width * height];
 
-        Node temp;
         for (int y = 0; y < height; ++y) {
                 for (int x = 0; x < width; ++x) {
-                        temp = Node(renderer, x, y, false);
-                        values[y * width + x] = temp;
+                        values[y * width + x] = Node(renderer, x, y, size);
                 }
         }
 };
@@ -66,15 +64,15 @@ void Grid::removeWalls() {
         walls.clear();
 }
 
-void Grid::drawWall() {
+void Grid::drawWalls() {
         for (auto &wall : walls) wall.draw(44, 44, 44);
 }
 
 void Grid::draw() {
         SDL_SetRenderDrawColor(renderer, 226, 221, 221, 0xff);
 
-        for (int x = -1; x < 1 + width * SIZE - SIZE; x += SIZE)
+        for (int x = -1; x < 1 + width * size - size; x += size)
                 SDL_RenderDrawLine(renderer, x, 0, x, SCREEN_HEIGHT);
-        for (int y = -1; y < 1 + height * SIZE - SIZE; y += SIZE)
+        for (int y = -1; y < 1 + height * size - size; y += size)
                 SDL_RenderDrawLine(renderer, 0, y, SCREEN_WIDTH, y);
 }

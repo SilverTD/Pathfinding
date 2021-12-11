@@ -8,7 +8,7 @@
 
 class Grid {
         public:
-                Grid(SDL_Renderer *renderer, const int &width, const int &height);
+                Grid(SDL_Renderer *renderer, const int &width, const int &height, const int &size);
                 Grid() = default;
                 ~Grid() = default;
 
@@ -19,11 +19,10 @@ class Grid {
                 bool checkExist(const int &x, const int &y);
                 void removeWall(const int &x, const int &y);
                 void removeWalls();
-                void drawWall();
+                void drawWalls();
                 void draw();
         private:
-                int width;
-                int height;
+                int width, height, size;
 
                 Node *values;
 

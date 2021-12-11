@@ -1,10 +1,10 @@
 #include "Node.h"
 
-Node::Node(SDL_Renderer *renderer, const int &x, const int &y, const bool &isWall) :
-renderer(renderer), x(x), y(y), isWall(isWall) {
-        rect.w = rect.h = SIZE;
-        rect.x = x * SIZE;
-        rect.y = y * SIZE;
+Node::Node(SDL_Renderer *renderer, const int &x, const int &y, const int &size) :
+renderer(renderer), x(x), y(y) {
+        rect.w = rect.h = size;
+        rect.x = x * size;
+        rect.y = y * size;
 };
 
 void Node::draw(const uint8_t &r, const uint8_t &g, const uint8_t &b) {
@@ -17,10 +17,10 @@ void Node::setParent(const Node &parent) {
         parentY = parent.y;
 }
 
-bool Node::operator == (const Node &other) const {
+bool Node::operator==(const Node &other) const {
         return (x == other.x && y == other.y);
 }
 
-bool Node::operator != (const Node &other) const {
+bool Node::operator!=(const Node &other) const {
         return (x != other.x || y != other.y);
 }

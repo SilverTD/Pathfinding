@@ -1,9 +1,9 @@
 #pragma once
 
-#define ROWS 25
-#define COLS 16
+#define SCREEN_WIDTH 1000
+#define SCREEN_HEIGHT 640
 
-#define SIZE 40
+static int SIZE = 40;
 
-#define SCREEN_WIDTH ROWS * SIZE
-#define SCREEN_HEIGHT COLS * SIZE
+static int ROWS = SCREEN_WIDTH / SIZE;
+static int COLS = SCREEN_HEIGHT / SIZE;

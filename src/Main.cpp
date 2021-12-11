@@ -31,6 +31,8 @@
 
 #include <math.h>
 
+#include <functional>
+
 #include "Globals.h"
 
 #include "Node.h"
@@ -55,21 +57,36 @@ bool
 
 Grid grid;
 
-SDL_Rect grid_cursor_ghost = {(ROWS - 1) / 2 * SIZE, (COLS - 1) / 2 * SIZE, SIZE, SIZE};
+SDL_Rect grid_cursor_ghost;
+
+SDL_Event event;
 
 Node start, target;
 
 std::vector<Node> open, closed;
 std::vector<Node> path;
 
-void init() {
-        grid = Grid(renderer, ROWS, COLS);
-        start = Node(renderer, 0, 0, false);
-        target = Node(renderer, ROWS - 1, COLS - 1, false);
+inline void init() {
+        open.clear();
+        closed.clear();
+        path.clear();
+
+        grid = Grid(renderer, ROWS, COLS, SIZE);
+        start = Node(renderer, 0, 0, SIZE);
+        target = Node(renderer, ROWS - 1, COLS - 1, SIZE);
+        grid_cursor_ghost = {(ROWS - 1) / 2 * SIZE, (COLS - 1) / 2 * SIZE, SIZE, SIZE};
 }
 
-float heuristic(const Node &start, const Node &end) {
+inline float heuristic(const Node &start, const Node &end) {
         return std::hypot(end.x - start.x, end.y - start.y);
+}
+
+inline void zoom(const std::function<void()> &callback) {
+        callback();
+        ROWS = SCREEN_WIDTH / SIZE;
+        COLS = SCREEN_HEIGHT / SIZE;
+
+        init();
 }
 
 void update() {
@@ -97,7 +114,7 @@ void update() {
         open.erase(std::remove(open.begin(), open.end(), current), open.end());
         closed.push_back(current);
 
-        for (Node neighbor : grid.getNeighbors(current)) {
+        for (auto &neighbor : grid.getNeighbors(current)) {
                 if (neighbor.isWall || (std::find(closed.begin(), closed.end(), neighbor) != closed.end()))
                         continue;
 
@@ -116,10 +133,15 @@ void update() {
 }
 
 void input() {
-        SDL_Event event;
         while (SDL_PollEvent(&event)) {
                 switch (event.type) {
                         case SDL_QUIT: running = false; break;
+                        case SDL_MOUSEWHEEL:
+                                if(event.wheel.y > 0 && !startFinding && SIZE < 100)
+                                        zoom([&]() { SIZE += 10; });
+                                else if(event.wheel.y < 0 && !startFinding && SIZE >= 20)
+                                        zoom([&]() { SIZE -= 10; });
+                                break;
                         case SDL_MOUSEMOTION:
                                 grid_cursor_ghost.x = (event.motion.x / SIZE) * SIZE;
                                 grid_cursor_ghost.y = (event.motion.y / SIZE) * SIZE;
@@ -133,8 +155,8 @@ void input() {
                                 open.clear();
                                 closed.clear();
                                 path.clear();
-                                if (type == 0) start = Node(renderer, (event.motion.x / SIZE), (event.motion.y / SIZE), false);
-                                else if (type == 1) target = Node(renderer, (event.motion.x / SIZE), (event.motion.y / SIZE), false);
+                                if (type == 0) start = Node(renderer, (event.motion.x / SIZE), (event.motion.y / SIZE), SIZE);
+                                else if (type == 1) target = Node(renderer, (event.motion.x / SIZE), (event.motion.y / SIZE), SIZE);
                                 else if (type == 2) {
                                         if (grid.checkExist((event.motion.x / SIZE), (event.motion.y / SIZE))) {
                                                 grid.removeWall((event.motion.x / SIZE), (event.motion.y / SIZE));
@@ -185,7 +207,7 @@ void draw() {
         for (auto &node : open) node.draw(36, 221, 96);      // Green.
         for (auto &node : path) node.draw(85, 176, 254);      // Pink.
 
-        grid.drawWall();
+        grid.drawWalls();
 
         start.draw(63, 119, 255);
         target.draw(255, 34, 10);
