@@ -15,7 +15,7 @@ renderer(renderer), width(width), height(height), size(size) {
         }
 };
 
-std::vector<Node> Grid::getNeighbors(const Node &node) {
+auto Grid::getNeighbors(const Node &node) -> std::vector<Node> {
         std::vector<Node> neighbors;
 
         for (int y = -1; y <= 1; ++y) {
@@ -33,8 +33,12 @@ std::vector<Node> Grid::getNeighbors(const Node &node) {
         return neighbors;
 }
 
-Node Grid::getNode(const int &x, const int &y) {
+auto Grid::getNode(const int &x, const int &y) -> Node {
         return values[y * width + x];
+}
+
+auto Grid::checkExist(const int &x, const int &y) -> bool {
+        return (std::find(walls.begin(), walls.end(), values[y * width + x]) != walls.end());
 }
 
 void Grid::setParent(const Node &child, const Node &parent) {
@@ -46,21 +50,14 @@ void Grid::addWall(const int &x, const int &y) {
         walls.push_back(values[y * width + x]);
 }
 
-bool Grid::checkExist(const int &x, const int &y) {
-        return (std::find(walls.begin(), walls.end(), values[y * width + x]) != walls.end());
-}
-
 void Grid::removeWall(const int &x, const int &y) {
         values[y * width + x].isWall = false;
         walls.erase(std::remove(walls.begin(), walls.end(), values[y * width + x]), walls.end());
 }
 
 void Grid::removeWalls() {
-        for (int y = 0; y < height; ++y) {
-                for (int x = 0; x < width; ++x) {
-                        values[y * width + x].isWall = false;
-                }
-        }
+        for (auto &wall : walls)
+                values[wall.y * width + wall.x].isWall = false;
         walls.clear();
 }
 

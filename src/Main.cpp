@@ -29,8 +29,6 @@
 
 #include <math.h>
 
-#include <functional>
-
 #include "Globals.h"
 
 #include "Node.h"
@@ -75,12 +73,12 @@ inline void init() {
         grid_cursor_ghost = {(ROWS - 1) / 2 * SIZE, (COLS - 1) / 2 * SIZE, SIZE, SIZE};
 }
 
-inline float heuristic(const Node &start, const Node &end) {
+inline auto heuristic(const Node &start, const Node &end) -> float {
         return std::hypot(end.x - start.x, end.y - start.y);
 }
 
-inline void zoom(const std::function<void()> &callback) {
-        callback();
+inline void zoom(int&& size) {
+        SIZE += size;
         ROWS = SCREEN_WIDTH / SIZE;
         COLS = SCREEN_HEIGHT / SIZE;
 
@@ -136,9 +134,9 @@ void input() {
                         case SDL_QUIT: running = false; break;
                         case SDL_MOUSEWHEEL:
                                 if(event.wheel.y > 0 && !startFinding && SIZE < 100)
-                                        zoom([&]() { SIZE += 10; });
+                                        zoom(10);
                                 else if(event.wheel.y < 0 && !startFinding && SIZE >= 20)
-                                        zoom([&]() { SIZE -= 10; });
+                                        zoom(-10);
                                 break;
                         case SDL_MOUSEMOTION:
                                 grid_cursor_ghost.x = (event.motion.x / SIZE) * SIZE;
@@ -201,9 +199,9 @@ void draw() {
         SDL_SetRenderDrawColor(renderer, 192, 191, 192, 0xff);     // Draw grid_cursor_ghost.
         SDL_RenderFillRect(renderer, &grid_cursor_ghost);
 
-        for (auto &node : closed) node.draw(255, 106, 73);    // Red.
-        for (auto &node : open) node.draw(36, 221, 96);      // Green.
-        for (auto &node : path) node.draw(85, 176, 254);      // Pink.
+        for (auto &node : closed) node.draw(255, 106, 73);
+        for (auto &node : open) node.draw(36, 221, 96);
+        for (auto &node : path) node.draw(85, 176, 254);
 
         grid.drawWalls();
 

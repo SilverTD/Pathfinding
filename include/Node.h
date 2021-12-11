@@ -13,8 +13,8 @@ class Node {
                 void draw(const uint8_t &r, const uint8_t &g, const uint8_t &b);
                 void setParent(const Node &parent);
 
-                bool operator==(const Node &other) const;
-                bool operator!=(const Node &other) const;
+                auto operator==(const Node &other) const -> bool;
+                auto operator!=(const Node &other) const -> bool;
 
                 int
                         x = 0,

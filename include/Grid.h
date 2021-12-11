@@ -12,13 +12,16 @@ class Grid {
                 Grid() = default;
                 ~Grid() = default;
 
-                std::vector<Node> getNeighbors(const Node &node);
-                Node getNode(const int &x, const int &y);
+                auto getNeighbors(const Node &node) -> std::vector<Node>;
+                auto getNode(const int &x, const int &y) -> Node;
+                auto checkExist(const int &x, const int &y) -> bool;
+
                 void setParent(const Node &child, const Node &parent);
+                
                 void addWall(const int &x, const int &y);
-                bool checkExist(const int &x, const int &y);
                 void removeWall(const int &x, const int &y);
                 void removeWalls();
+
                 void drawWalls();
                 void draw();
         private:

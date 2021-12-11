@@ -17,10 +17,10 @@ void Node::setParent(const Node &parent) {
         parentY = parent.y;
 }
 
-bool Node::operator==(const Node &other) const {
+auto Node::operator==(const Node &other) const -> bool {
         return (x == other.x && y == other.y);
 }
 
-bool Node::operator!=(const Node &other) const {
+auto Node::operator!=(const Node &other) const -> bool {
         return (x != other.x || y != other.y);
 }
