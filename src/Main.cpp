@@ -1,6 +1,6 @@
 /*
         A* shortest pathfinding visualization.
-        Written by SilverbossTD (duynctsilverboss@gmail.com).
+        Written by SilverbossTD (duycntsilverboss@gmail.com).
 
         Language: C++.
         Library: SDL2.
@@ -24,8 +24,6 @@
 #include <iostream>
 
 #include <vector>
-
-#include <array>
 
 #include <algorithm>
 
