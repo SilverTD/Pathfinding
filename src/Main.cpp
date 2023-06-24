@@ -1,39 +1,18 @@
-/*
-        A* shortest pathfinding visualization.
-        Written by SilverbossTD (duycntsilverboss@gmail.com).
-
-        Language: C++.
-        Library: SDL2.
-        Algorithm: A*.
-
-        Basic Controls:
-        - Create "Nodes":
-                + Start: press 1 + left click.
-                + End: press 2 + left click.
-                + Wall: press 3 + left click.
-        - Delete "Walls":
-                + Press 3 + left click on the wall.
-        - Start finding:
-                + Press "Enter".
-        - Clear the map:
-                + Press "ESC".
-*/
-
 #include <SDL2/SDL.h>
-
 #include <iostream>
-
 #include <vector>
-
 #include <algorithm>
-
 #include <math.h>
 
 #include "Globals.h"
-
 #include "Node.h"
-
 #include "Grid.h"
+
+enum State {
+	START,
+	TARGET,
+	WALL
+};
 
 SDL_Window *window = nullptr;
 SDL_Renderer *renderer = nullptr;
@@ -44,7 +23,7 @@ int
         lastFrame,
         fps,
         lastTime,
-        type = 0;
+        state = State::WALL;
 
 bool
         running = true,
@@ -52,15 +31,14 @@ bool
         startFinding = false;
 
 Grid grid;
-
 SDL_Rect grid_cursor_ghost;
-
 SDL_Event event;
-
 Node start, target;
 
 std::vector<Node> open, closed;
 std::vector<Node> path;
+
+#define convert(x) (x / SIZE)
 
 inline void init() {
         open.clear();
@@ -79,8 +57,8 @@ inline auto heuristic(const Node &start, const Node &end) -> float {
 
 inline void zoom(int&& size) {
         SIZE += size;
-        ROWS = SCREEN_WIDTH / SIZE;
-        COLS = SCREEN_HEIGHT / SIZE;
+        ROWS = convert(SCREEN_WIDTH);
+        COLS = convert(SCREEN_HEIGHT);
 
         init();
 }
@@ -128,60 +106,66 @@ void update() {
         }
 }
 
+void handle_mouse_wheel(const int& y) {
+	if (y > 0 && !startFinding && SIZE < 100) zoom(10);
+	else if (y < 0 && !startFinding && SIZE >= 20) zoom(-10);
+}
+
+void handle_mouse_motion(const int& x, const int& y) {
+	grid_cursor_ghost.x = x * SIZE;
+        grid_cursor_ghost.y = y * SIZE;
+	if (mouseDown && state == State::WALL && (!grid.checkExist(x, y)))
+                grid.addWall(x, y);
+}
+
+void handle_mouse_button_down(const int& x, const int& y) {
+	mouseDown = true;
+        open.clear();
+        closed.clear();
+        path.clear();
+
+	switch (state) {
+		case State::START: start = Node(renderer, x, y, SIZE); break;
+		case State::TARGET: target = Node(renderer, x, y, SIZE); break;
+		case State::WALL:
+			if (grid.checkExist(x, y)) {
+				grid.removeWall(x, y);
+				return;
+			}
+			grid.addWall(x, y);
+			break;
+
+	}
+}
+
+void handle_key_down(const int& e) {
+	switch (e) {
+		case SDLK_RETURN:
+			startFinding = true;
+                        open.push_back(start);
+                        break;
+                case SDLK_ESCAPE:
+                        startFinding = false;
+                        open.clear();
+                        closed.clear();
+                        path.clear();
+                        grid.removeWalls();
+                        break;
+		case SDLK_1: state = State::START; break;
+		case SDLK_2: state = State::TARGET; break;
+		case SDLK_3: state = State::WALL; break;
+	}
+}
+
 void input() {
         while (SDL_PollEvent(&event)) {
                 switch (event.type) {
                         case SDL_QUIT: running = false; break;
-                        case SDL_MOUSEWHEEL:
-                                if(event.wheel.y > 0 && !startFinding && SIZE < 100)
-                                        zoom(10);
-                                else if(event.wheel.y < 0 && !startFinding && SIZE >= 20)
-                                        zoom(-10);
-                                break;
-                        case SDL_MOUSEMOTION:
-                                grid_cursor_ghost.x = (event.motion.x / SIZE) * SIZE;
-                                grid_cursor_ghost.y = (event.motion.y / SIZE) * SIZE;
-                                if (mouseDown && type == 2) {
-                                        if (grid.checkExist((event.motion.x / SIZE), (event.motion.y / SIZE))) break;
-                                        grid.addWall((event.motion.x / SIZE), (event.motion.y / SIZE));
-                                }
-                                break;
-                        case SDL_MOUSEBUTTONDOWN:
-                                mouseDown = true;
-                                open.clear();
-                                closed.clear();
-                                path.clear();
-                                if (type == 0) start = Node(renderer, (event.motion.x / SIZE), (event.motion.y / SIZE), SIZE);
-                                else if (type == 1) target = Node(renderer, (event.motion.x / SIZE), (event.motion.y / SIZE), SIZE);
-                                else if (type == 2) {
-                                        if (grid.checkExist((event.motion.x / SIZE), (event.motion.y / SIZE))) {
-                                                grid.removeWall((event.motion.x / SIZE), (event.motion.y / SIZE));
-                                                break;
-                                        }
-                                        grid.addWall((event.motion.x / SIZE), (event.motion.y / SIZE));
-                                }
-                                break;
-                        case SDL_MOUSEBUTTONUP:
-                                mouseDown = false;
-                                break;
-                        case SDL_KEYDOWN:
-                                switch (event.key.keysym.sym) {
-                                        case SDLK_RETURN:
-                                                startFinding = true;
-                                                open.push_back(start);
-                                                break;
-                                        case SDLK_ESCAPE:
-                                                startFinding = false;
-                                                open.clear();
-                                                closed.clear();
-                                                path.clear();
-                                                grid.removeWalls();
-                                                break;
-                                        case SDLK_1: type = 0; break;
-                                        case SDLK_2: type = 1; break;
-                                        case SDLK_3: type = 2; break;
-                                }
-                                break;
+			case SDL_MOUSEBUTTONUP: mouseDown = false; break;
+			case SDL_MOUSEWHEEL: handle_mouse_wheel(event.wheel.y); break; 
+                        case SDL_MOUSEMOTION: handle_mouse_motion(convert(event.motion.x), convert(event.motion.y)); break;
+                        case SDL_MOUSEBUTTONDOWN: handle_mouse_button_down(convert(event.motion.x), convert(event.motion.y)); break;
+                        case SDL_KEYDOWN: handle_key_down(event.key.keysym.sym); break;
                 }
         }
 }

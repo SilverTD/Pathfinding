@@ -1,8 +1,10 @@
-#include "Grid.h"
+#include <math.h>
+#include <algorithm>
 
+#include "Grid.h"
 #include "Globals.h"
 
-#include <algorithm>
+#define PI_2 (3.14 / 2)
 
 Grid::Grid(SDL_Renderer *renderer, const int &width, const int &height, const int &size) :
 renderer(renderer), width(width), height(height), size(size) {
@@ -17,20 +19,16 @@ renderer(renderer), width(width), height(height), size(size) {
 
 auto Grid::getNeighbors(const Node &node) -> std::vector<Node> {
         std::vector<Node> neighbors;
+	
+	for (unsigned int i = 0; i < 4; ++i) {
+                int checkX = node.x + round(-1 * cos(PI_2 * i));
+                int checkY = node.y + round(-1 * sin(PI_2 * i));
 
-        for (int y = -1; y <= 1; ++y) {
-                for (int x = -1; x <= 1; ++x) {
-                        if (x == 0 && y == 0) continue;
-
-                        int checkX = node.x + x;
-                        int checkY = node.y + y;
-
-                        if (checkX >= 0 && checkX < width && checkY >= 0 && checkY < height)
-                                neighbors.push_back(getNode(checkX, checkY));
-                }
+		if (checkX >= 0 && checkX < width && checkY >= 0 && checkY < height)
+                        neighbors.push_back(getNode(checkX, checkY));
         }
 
-        return neighbors;
+	return neighbors;
 }
 
 auto Grid::getNode(const int &x, const int &y) -> Node {

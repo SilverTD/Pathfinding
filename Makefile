@@ -10,3 +10,6 @@ CFLAGSB = ${LIBS} -o main
 
 build:
 	${CC} ./src/*.cpp ${CFLAGSO} ${CFLAGSB}
+
+clear:
+	rm main
